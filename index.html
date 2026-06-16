@@ -1,0 +1,36 @@
+<!doctype html><html lang='de'><head>
+<meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Liedermappe V8 PWA</title>
+<link rel='manifest' href='manifest.json'>
+<meta name='theme-color' content='#1f4e79'>
+<style>body{font-family:Arial;padding:10px}#q{width:80%;font-size:20px}</style>
+</head><body>
+<h2>Liedermappe V8</h2>
+<input id='q' placeholder='Titel suchen...'><button onclick='voice()'>🎤</button>
+<div id='out'></div>
+<script>
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');
+
+const songs=[
+{k:1,c:'ELVIS 1',n:1,t:'Johnny B. Goode'},{k:1,c:'ELVIS 1',n:9,t:'Love Me Tender'},
+{k:2,c:'ELVIS 2',n:2,t:'Love Me'},{k:3,c:'ELVIS 3',n:21,t:'Proud Mary'},
+{k:3,c:'ELVIS 3',n:22,t:'Always on My Mind'},{k:4,c:'OLDIES',n:11,t:'Under the Boardwalk'},
+{k:5,c:'SCHLAGER 1',n:18,t:'Ham kummst (Schware Partie)'},{k:7,c:'EVERGREEN',n:1,t:'New York, New York'},
+{k:8,c:'ROCK',n:20,t:'Smoke on the Water'},{k:9,c:'DISCO',n:15,t:"I'm Easy"},
+{k:10,c:'PARTY',n:5,t:'Feel'},{k:10,c:'PARTY',n:12,t:'Smooth'},
+{k:12,c:'CD 2013',n:5,t:'Love Me Again'},{k:13,c:'FETEN',n:4,t:'Country Roads'},
+{k:14,c:'MEDL / SHO',n:23,t:'Love My Life (kurz)'},{k:15,c:'DANCE',n:6,t:'Love Is in the Air'},
+{k:17,c:'NEU 23',n:12,t:'Love My Life'},{k:17,c:'NEU 23',n:15,t:'Bella Napoli'},
+{k:17,c:'NEU 23',n:16,t:'Ein bisschen Aroma'}
+];
+
+function render(){
+ let q=document.getElementById('q').value.toLowerCase();
+ let h=songs.filter(s=>!q||s.t.toLowerCase().includes(q)||String(s.k)==q||String(s.n)==q);
+ document.getElementById('out').innerHTML=h.map(s=>`<div><b>${s.t}</b><br>Kapitel ${s.k} · Nr. ${s.n}</div>`).join('');
+}
+document.getElementById('q').addEventListener('input',render); render();
+function voice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!SR) return alert('Keine Spracherkennung');
+let r=new SR(); r.lang='de-DE'; r.onresult=e=>{q.value=e.results[0][0].transcript; render();}; r.start();}
+</script></body></html>
